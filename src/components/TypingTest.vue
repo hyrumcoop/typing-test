@@ -2,7 +2,6 @@
   <div class='typing-test'>
     <p>WPM: {{ totalWPM }}</p>
     <p>CPM: {{ totalCPM }}</p>
-    <p>Minutes: {{ totalMinutesElapsed }}</p>
     <p>{{ passage }}</p>
     <textarea
       v-model='input'
@@ -16,13 +15,22 @@
 </template>
 
 <script>
+import Passages from '../passages';
+
 const ALLOWED_INPUT_TYPES = ['insertText', 'deleteContentBackward'];
 
-const initialState = () => {
+const randomPassage = () => {
+  let index = Math.floor(Math.random() * Passages.length);
+  return Passages[index]
+}
+
+const initialState = (passage) => {
+  if (!passage) passage = randomPassage().passage;
+
   return {
     began: false,
 
-    passage: 'This is a difficult typing passage.',
+    passage,
     input: '',
     prevInput: '',
     beginTime: null,
