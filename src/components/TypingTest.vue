@@ -11,32 +11,37 @@
       class='test-textarea'
       :class='{error: containsError, complete: isComplete}'
     />
+    <button @click='reset()'>Reset</button>
   </div>
 </template>
 
 <script>
 const ALLOWED_INPUT_TYPES = ['insertText', 'deleteContentBackward'];
 
+const initialState = () => {
+  return {
+    began: false,
+
+    passage: 'This is a difficult typing passage.',
+    input: '',
+    prevInput: '',
+    beginTime: null,
+    finishTime: null,
+
+    isComplete: false,
+    containsError: false,
+
+    curWordIndex: 0,
+    wordBeginTime: null,
+    wordTimes: [],
+    mistakes: {} // dict of arrays for each each index; each array contains all incorrect spellings typed by the user
+  }
+}
+
 export default {
   name: 'TypingTest',
   data() {
-    return {
-      began: false,
-
-      passage: 'This is a difficult typing passage.',
-      input: '',
-      prevInput: '',
-      beginTime: null,
-      finishTime: null,
-
-      isComplete: false,
-      containsError: false,
-
-      curWordIndex: 0,
-      wordBeginTime: null,
-      wordTimes: [],
-      mistakes: {} // dict of arrays for each each index; each array contains all incorrect spellings typed by the user
-    }
+    return initialState()
   },
   props: {},
   methods: {
@@ -95,7 +100,7 @@ export default {
     onComplete() {
       this.isComplete = true;
       this.finishTime = Date.now();
-      
+
       this.$emit('oncomplete', {
         passage: this.passage,
         elapsedMinutes: this.totalMinutesElapsed(this.beginTime, this.finishTime),
@@ -115,6 +120,9 @@ export default {
       if (!start || !end) return (Date.now() - this.beginTime) / (60 * 1000)
 
       return (end - start) / (60 * 1000);
+    },
+    reset() {
+      Object.assign(this.$data, initialState());
     }
   },
   computed: {
