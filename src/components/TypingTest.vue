@@ -1,5 +1,8 @@
 <template>
   <div class='typing-test'>
+    <p>WPM: {{ totalWPM }}</p>
+    <p>CPM: {{ totalCPM }}</p>
+    <p>Minutes: {{ totalMinutesElapsed }}</p>
     <p>{{ passage }}</p>
     <textarea
       v-model='input'
@@ -18,15 +21,20 @@ export default {
   name: 'TypingTest',
   data() {
     return {
+      began: false,
+
       passage: 'This is a difficult typing passage.',
       input: '',
       prevInput: '',
       beginTime: null,
+      finishTime: null,
 
       isComplete: false,
       containsError: false,
 
       curWordIndex: 0,
+      wordBeginTime: null,
+      wordTimes: [],
       mistakes: {} // dict of arrays for each each index; each array contains all incorrect spellings typed by the user
     }
   },
@@ -39,7 +47,7 @@ export default {
       if (this.isComplete) return event.preventDefault();
     },
     onType(event) {
-      if (!this.beginTime) this.beginTime = Date.now(); // TODO: consolidate to its own function
+      if (!this.began) this.onBegin();
 
       // prevent user from copy/pasting
       if (this.isIllegalInput(event)) {
@@ -51,18 +59,18 @@ export default {
       this.containsError = !this.isCorrect();
 
       // mark word as an error if typed incorrectly
-      if (this.containsError) { // TODO: consolidate to its own function
+      if (this.containsError) {
         this.recordError();
       }
 
       // increase word index when space is typed following a correct sequence of words
-      // TODO: record time for each word
       if (event.data == ' ' && !this.containsError) {
+        this.wordTimes[this.curWordIndex] = Date.now() - this.wordBeginTime;
         this.curWordIndex++;
       }
 
       if (!this.isComplete && this.passage == this.input) {
-        this.onComplete(); // TODO: should I use an event instead?
+        this.onComplete();
       }
     },
     recordError() {
@@ -79,11 +87,22 @@ export default {
     isCorrect() {
       return this.passage.startsWith(this.input);
     },
+    onBegin() {
+      this.began = true;
+      this.beginTime = Date.now();
+      this.wordBeginTime = Date.now();
+    },
     onComplete() {
       this.isComplete = true;
-      console.log('Woohoo!', this.mistakes, this.wordsComplete, this.charactersComplete);
-
-      // TODO: end timer when passage is done, accumulate errors
+      this.finishTime = Date.now();
+      
+      this.$emit('oncomplete', {
+        passage: this.passage,
+        elapsedMinutes: this.totalMinutesElapsed(this.beginTime, this.finishTime),
+        mistakeCount: this.mistakeCount,
+        mistakes: this.mistakes,
+        wordTimes: this.wordTimes
+      })
     },
     isIllegalInput(event) {
       if (!ALLOWED_INPUT_TYPES.includes(event.inputType)) return true;
@@ -91,6 +110,11 @@ export default {
       // check if more than one character was deleted or inserted
       let lenDiff = Math.abs(this.input.length - this.prevInput.length);
       if (lenDiff != 1) return true;
+    },
+    totalMinutesElapsed(start, end) {
+      if (!start || !end) return (Date.now() - this.beginTime) / (60 * 1000)
+
+      return (end - start) / (60 * 1000);
     }
   },
   computed: {
@@ -109,6 +133,15 @@ export default {
 
       let min = this.words.slice(0, this.curWordIndex).join(' ').length;
       return min; // TODO: this is wrong but I'll come back to it later
+    },
+    totalWPM() {
+      return Math.floor(this.wordsComplete / this.totalMinutesElapsed());
+    },
+    totalCPM() {
+      return Math.floor(this.charactersComplete / this.totalMinutesElapsed());
+    },
+    mistakeCount() {
+      return Object.keys(this.mistakes).length;
     }
   }
 }
