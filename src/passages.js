@@ -24,8 +24,8 @@ export default [
     passage: `It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.`
   },
   {
-    src: `Stuff your eyes with wonder, he said, live as if you'd drop dead in ten seconds. See the world. It's more fantastic than any dream made or paid for in factories.`,
-    passage: `Fahrenheit 451`
+    src: `Fahrenheit 451`,
+    passage: `Stuff your eyes with wonder, he said, live as if you'd drop dead in ten seconds. See the world. It's more fantastic than any dream made or paid for in factories.`
   },
   {
     src: `Oh, the Places You'll Go!`,

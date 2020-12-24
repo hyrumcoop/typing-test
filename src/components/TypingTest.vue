@@ -1,7 +1,7 @@
 <template>
   <div class='typing-test'>
-    <p>WPM: {{ totalWPM }}</p>
-    <p>CPM: {{ totalCPM }}</p>
+    <p>WPM: {{ curWPM }}</p>
+    <p>CPM: {{ curCPM }}</p>
     <p>{{ passage }}</p>
     <textarea
       v-model='input'
@@ -11,6 +11,13 @@
       :class='{error: containsError, complete: isComplete}'
     />
     <button @click='reset()'>Reset</button>
+
+    <div class='results' v-if='isComplete'>
+      <p>WPM: {{ results.wpm}}</p>
+      <p>CPM: {{ results.cpm }}</p>
+      <p>Mistakes: {{ results.mistakeCount }}</p>
+      <p>Percent accuracy: {{ results.percAccuracy }}</p>
+    </div>
   </div>
 </template>
 
@@ -42,7 +49,9 @@ const initialState = (passage) => {
     curWordIndex: 0,
     wordBeginTime: null,
     wordTimes: [],
-    mistakes: {} // dict of arrays for each each index; each array contains all incorrect spellings typed by the user
+    mistakes: {}, // dict of arrays for each each index; each array contains all incorrect spellings typed by the user
+
+    results: {}
   }
 }
 
@@ -109,13 +118,18 @@ export default {
       this.isComplete = true;
       this.finishTime = Date.now();
 
-      this.$emit('oncomplete', {
+      this.results = {
         passage: this.passage,
         elapsedMinutes: this.totalMinutesElapsed(this.beginTime, this.finishTime),
         mistakeCount: this.mistakeCount,
         mistakes: this.mistakes,
-        wordTimes: this.wordTimes
-      })
+        wordTimes: this.wordTimes,
+        wpm: this.calculateWPM(),
+        cpm: this.calculateCPM(),
+        percAccuracy: 100 - Math.floor((this.mistakeCount / this.words.length) * 100)
+      };
+
+      this.$emit('oncomplete', this.results);
     },
     isIllegalInput(event) {
       if (!ALLOWED_INPUT_TYPES.includes(event.inputType)) return true;
@@ -131,6 +145,12 @@ export default {
     },
     reset() {
       Object.assign(this.$data, initialState());
+    },
+    calculateWPM() {
+      return Math.floor(this.wordsComplete / this.totalMinutesElapsed());
+    },
+    calculateCPM() {
+      return Math.floor(this.charactersComplete / this.totalMinutesElapsed());
     }
   },
   computed: {
@@ -150,11 +170,11 @@ export default {
       let min = this.words.slice(0, this.curWordIndex).join(' ').length;
       return min; // TODO: this is wrong but I'll come back to it later
     },
-    totalWPM() {
-      return Math.floor(this.wordsComplete / this.totalMinutesElapsed());
+    curWPM() {
+      return this.calculateWPM();
     },
-    totalCPM() {
-      return Math.floor(this.charactersComplete / this.totalMinutesElapsed());
+    curCPM() {
+      return this.calculateCPM();
     },
     mistakeCount() {
       return Object.keys(this.mistakes).length;
@@ -163,7 +183,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
 .test-textarea {
