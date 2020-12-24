@@ -12,12 +12,15 @@
 </template>
 
 <script>
+const ALLOWED_INPUT_TYPES = ['insertText', 'deleteContentBackward'];
+
 export default {
   name: 'TypingTest',
   data() {
     return {
       passage: 'This is a difficult typing passage.',
       input: '',
+      prevInput: '',
       beginTime: null,
 
       isComplete: false,
@@ -30,12 +33,20 @@ export default {
   props: {},
   methods: {
     onKeyPress(event) {
-      // TODO: prevent user from backspacing a correct word
+      // prevent user from backspacing a correct word
+      if (this.isCorrect() && event.key == 'Backspace') return event.preventDefault();
 
       if (this.isComplete) return event.preventDefault();
     },
     onType(event) {
       if (!this.beginTime) this.beginTime = Date.now(); // TODO: consolidate to its own function
+
+      // prevent user from copy/pasting
+      if (this.isIllegalInput(event)) {
+        return this.input = this.prevInput;
+      } else {
+        this.prevInput = this.input;
+      }
 
       this.containsError = !this.isCorrect();
 
@@ -73,6 +84,13 @@ export default {
       console.log('Woohoo!', this.mistakes, this.wordsComplete, this.charactersComplete);
 
       // TODO: end timer when passage is done, accumulate errors
+    },
+    isIllegalInput(event) {
+      if (!ALLOWED_INPUT_TYPES.includes(event.inputType)) return true;
+
+      // check if more than one character was deleted or inserted
+      let lenDiff = Math.abs(this.input.length - this.prevInput.length);
+      if (lenDiff != 1) return true;
     }
   },
   computed: {
