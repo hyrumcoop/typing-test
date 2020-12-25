@@ -6,6 +6,10 @@
         <span class='cpm-counter'>{{ curCPM }} CPM</span>
         <span class='mistake-counter' v-if='mistakeCount != 1'>{{ mistakeCount }} MISTAKES</span>
         <span class='mistake-counter' v-else>{{ mistakeCount }} MISTAKE</span>
+
+        <b-button class='reset-button' @click='reset()'>
+          <b-icon icon='arrow-counterclockwise' />
+        </b-button>
       </div>
     </div>
 
@@ -36,12 +40,11 @@
         />
       </div>
     </div>
-
-    <button @click='reset()'>Reset</button>
   </div>
 </template>
 
 <script>
+import { BButton, BIcon } from 'bootstrap-vue';
 import Passages from '../passages';
 
 const ALLOWED_INPUT_TYPES = ['insertText', 'deleteContentBackward'];
@@ -80,6 +83,9 @@ export default {
   name: 'TypingTest',
   data() {
     return initialState()
+  },
+  components: {
+    BButton, BIcon
   },
   props: {},
   methods: {
@@ -233,8 +239,14 @@ export default {
   background-color: #ef5350;
 }
 
+.reset-button {
+  padding: 12px 16px;
+  float: right;
+}
+
 .passage {
   font-size: 18px;
+  margin-bottom: 24px;
 }
 
 .passage-word .current {
