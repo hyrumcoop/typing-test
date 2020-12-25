@@ -10,8 +10,12 @@
     </div>
 
     <div class='row'>
-      <div class='col'>
-        <p class='passage'>{{ passage }}</p>
+      <div class='col passage'>
+        <span
+          v-for='(word, i) in words'
+          :key='i'
+          class='passage-word'
+        ><span :class='{current: i == curWordIndex}'>{{ word }}</span>{{ ' ' }}</span>
       </div>
     </div>
 
@@ -23,6 +27,7 @@
           @input='onType'
           class='test-textarea'
           :class='{error: containsError, complete: isComplete}'
+          :disabled='isComplete'
           rows='5'
           spellcheck='false'
           autocorrect='off'
@@ -232,7 +237,14 @@ export default {
   font-size: 18px;
 }
 
+.passage-word .current {
+  color: #2e7d32;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
 .test-textarea {
+  color: #212121;
   width: 100%;
   padding: 12px 6px;
 
@@ -243,6 +255,10 @@ export default {
   outline: none;
 
   resize: none;
+}
+
+.test-textarea:disabled {
+  color: #212121;
 }
 
 .test-textarea.error {
