@@ -1,29 +1,37 @@
 <template>
   <div class='typing-test'>
-    <row class='row counter-row'>
+    <div class='row counter-row'>
       <div class='col'>
         <span class='wpm-counter'>{{ curWPM }} WPM</span>
         <span class='cpm-counter'>{{ curCPM }} CPM</span>
         <span class='mistake-counter'>{{ mistakeCount }} MISTAKES</span>
       </div>
-    </row>
-
-    <p>{{ passage }}</p>
-    <textarea
-      v-model='input'
-      @keydown='onKeyPress'
-      @input='onType'
-      class='test-textarea'
-      :class='{error: containsError, complete: isComplete}'
-    />
-    <button @click='reset()'>Reset</button>
-
-    <div class='results' v-if='isComplete'>
-      <p>WPM: {{ results.wpm}}</p>
-      <p>CPM: {{ results.cpm }}</p>
-      <p>Mistakes: {{ results.mistakeCount }}</p>
-      <p>Percent accuracy: {{ results.percAccuracy }}</p>
     </div>
+
+    <div class='row'>
+      <div class='col'>
+        <p class='passage'>{{ passage }}</p>
+      </div>
+    </div>
+
+    <div class='row'>
+      <div class='col'>
+        <textarea
+          v-model='input'
+          @keydown='onKeyPress'
+          @input='onType'
+          class='test-textarea'
+          :class='{error: containsError, complete: isComplete}'
+          rows='5'
+          spellcheck='false'
+          autocorrect='off'
+          autocapitalize='off'
+          data-gramm_editor='false'
+        />
+      </div>
+    </div>
+
+    <button @click='reset()'>Reset</button>
   </div>
 </template>
 
@@ -220,16 +228,31 @@ export default {
   background-color: #ef5350;
 }
 
-.test-textarea {
+.passage {
+  font-size: 18px;
+}
 
+.test-textarea {
+  width: 100%;
+  padding: 12px 6px;
+
+  font-size: 18px;
+
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+
+  resize: none;
 }
 
 .test-textarea.error {
-  background-color: red;
+  background-color: #ef5350;
+  border-color: #c62828;
 }
 
 .test-textarea.complete {
-  background-color: green;
+  background-color: #81c784;
+  border-color: #66bb6a;
 }
 
 </style>

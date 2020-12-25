@@ -17,8 +17,6 @@ export default {
 
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap');
-
 #app {
   background-color: #eee;
   min-height: 100vh;
