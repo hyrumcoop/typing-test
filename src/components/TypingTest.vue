@@ -4,7 +4,8 @@
       <div class='col'>
         <span class='wpm-counter'>{{ curWPM }} WPM</span>
         <span class='cpm-counter'>{{ curCPM }} CPM</span>
-        <span class='mistake-counter'>{{ mistakeCount }} MISTAKES</span>
+        <span class='mistake-counter' v-if='mistakeCount != 1'>{{ mistakeCount }} MISTAKES</span>
+        <span class='mistake-counter' v-else>{{ mistakeCount }} MISTAKE</span>
       </div>
     </div>
 
@@ -64,6 +65,7 @@ const initialState = (passage) => {
     wordBeginTime: null,
     wordTimes: [],
     mistakes: {}, // dict of arrays for each each index; each array contains all incorrect spellings typed by the user
+    mistakeCount: 0,
 
     results: {}
   }
@@ -118,6 +120,7 @@ export default {
           curMistakes.push(curWord);
       } else if (!curMistakes) {
         this.mistakes[this.curWordIndex] = [curWord]
+        this.mistakeCount++;
       }
     },
     isCorrect() {
@@ -189,9 +192,6 @@ export default {
     },
     curCPM() {
       return this.calculateCPM();
-    },
-    mistakeCount() {
-      return Object.keys(this.mistakes).length;
     }
   }
 }
