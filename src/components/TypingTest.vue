@@ -15,6 +15,7 @@
 
     <div class='row'>
       <div class='col passage'>
+        <!-- TODO: cross out words that were mistyped -->
         <span
           v-for='(word, i) in words'
           :key='i'
@@ -32,7 +33,7 @@
           class='test-textarea'
           :class='{error: containsError, complete: isComplete}'
           :disabled='isComplete'
-          rows='5'
+          rows='3'
           spellcheck='false'
           autocorrect='off'
           autocapitalize='off'
@@ -146,11 +147,25 @@ export default {
       this.isComplete = true;
       this.finishTime = Date.now();
 
+      const mistakeWords = Object.keys(this.mistakes).map(i => this.words[i]);
+      const misspellings = Object.keys(this.mistakes).reduce((dict, index) => {
+        let word = this.words[index];
+
+        if (dict[word]) {
+          dict[word] = [...new Set([...dict[word] ,...this.mistakes[index]])];
+        } else {
+          dict[word] = this.mistakes[index];
+        }
+
+        return dict;
+      }, {});
+
       this.results = {
         passage: this.passage,
         elapsedMinutes: this.totalMinutesElapsed(this.beginTime, this.finishTime),
         mistakeCount: this.mistakeCount,
-        mistakes: this.mistakes,
+        mistakeWords,
+        misspellings,
         wordTimes: this.wordTimes,
         wpm: this.calculateWPM(),
         cpm: this.calculateCPM(),
