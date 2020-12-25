@@ -20,7 +20,7 @@
           v-for='(word, i) in words'
           :key='i'
           class='passage-word'
-        ><span :class='{current: i == curWordIndex}'>{{ word }}</span>{{ ' ' }}</span>
+        ><span :class='{current: i == curWordIndex, error: (i != curWordIndex) && mistakes[i]}'>{{ word }}</span>{{ ' ' }}</span>
       </div>
     </div>
 
@@ -268,6 +268,12 @@ export default {
   color: #2e7d32;
   font-weight: bold;
   text-decoration: underline;
+}
+
+.passage-word .error {
+  color: #ef5350;
+  font-weight: bold;
+  text-decoration: line-through;
 }
 
 .test-textarea {
