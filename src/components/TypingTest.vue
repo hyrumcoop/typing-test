@@ -1,7 +1,13 @@
 <template>
   <div class='typing-test'>
-    <p>WPM: {{ curWPM }}</p>
-    <p>CPM: {{ curCPM }}</p>
+    <row class='row counter-row'>
+      <div class='col'>
+        <span class='wpm-counter'>{{ curWPM }} WPM</span>
+        <span class='cpm-counter'>{{ curCPM }} CPM</span>
+        <span class='mistake-counter'>{{ mistakeCount }} MISTAKES</span>
+      </div>
+    </row>
+
     <p>{{ passage }}</p>
     <textarea
       v-model='input'
@@ -184,6 +190,35 @@ export default {
 </script>
 
 <style scoped>
+
+.counter-row {
+  padding: 24px 0px 24px 0px;
+}
+
+.wpm-counter, .cpm-counter, .mistake-counter {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size:24px;
+
+  color: #212121;
+
+  padding: 16px 24px;
+  border-radius: 16px;
+
+  margin-right:12px;
+}
+
+.wpm-counter {
+  background-color: #81c784;
+}
+
+.cpm-counter {
+  background-color: #64b5f6;
+}
+
+.mistake-counter {
+  background-color: #ef5350;
+}
 
 .test-textarea {
 

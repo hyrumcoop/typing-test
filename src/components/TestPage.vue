@@ -1,5 +1,5 @@
 <template>
-  <div class="body">
+  <div class="container page-container">
     <h1>Typing Test</h1>
     <typing-test />
   </div>
@@ -18,5 +18,11 @@ export default {
 </script>
 
 <style scoped>
+
+.page-container {
+  min-height: 100vh;
+  background-color: #fff;
+  box-shadow: 0px 0px 5px 2px #ccc;
+}
 
 </style>
