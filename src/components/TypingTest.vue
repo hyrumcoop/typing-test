@@ -7,7 +7,7 @@
         <span class='mistake-counter' v-if='mistakeCount != 1'>{{ mistakeCount }} MISTAKES</span>
         <span class='mistake-counter' v-else>{{ mistakeCount }} MISTAKE</span>
 
-        <b-button class='reset-button' @click='reset()'>
+        <b-button class='reset-button' @click='reset()' v-b-tooltip.hover title="Reset Test">
           <b-icon icon='arrow-counterclockwise' />
         </b-button>
       </div>
@@ -32,6 +32,7 @@
           class='test-textarea'
           :class='{error: containsError, complete: isComplete}'
           :disabled='isComplete'
+          :placeholder='passageLead'
           rows='3'
           spellcheck='false'
           autocorrect='off'
@@ -199,6 +200,10 @@ export default {
     // Returns array of words in passage (including punctuation!)
     words() {
       return this.passage.split(' ');
+    },
+
+    passageLead() {
+      return this.words.slice(0, 5).join(' ') + '...';
     },
 
     wordsComplete() {
