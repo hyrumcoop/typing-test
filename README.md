@@ -1,24 +1,5 @@
-# typing-test
+# Typing Test
 
-## Project setup
-```
-npm install
-```
+A simple typing test created with Vue. Try the [demo](https://hyrumcoop.github.io/typing-test/) to test your own typing speed and accuracy, and share your results with your friends!
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+![Image of Typing Test](https://raw.githubusercontent.com/hyrumcoop/typing-test/master/docs/screenshot.png)
