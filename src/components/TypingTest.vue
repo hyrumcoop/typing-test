@@ -15,7 +15,6 @@
 
     <div class='row'>
       <div class='col passage'>
-        <!-- TODO: cross out words that were mistyped -->
         <span
           v-for='(word, i) in words'
           :key='i'
